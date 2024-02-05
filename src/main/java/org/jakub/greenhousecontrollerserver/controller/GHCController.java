@@ -1,8 +1,12 @@
 package org.jakub.greenhousecontrollerserver.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.jakub.greenhousecontrollerserver.model.CollectedDataDAO;
 import org.jakub.greenhousecontrollerserver.model.ParametersDAO;
 import org.jakub.greenhousecontrollerserver.service.GHCService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,29 +16,40 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
+@AllArgsConstructor
+@NoArgsConstructor
 @RequestMapping("/ghc/")
 public class GHCController {
 
+    @Autowired
     private GHCService ghcService;
 
     @GetMapping("parameters")
     public ResponseEntity getParameters() {
-        ParametersDAO parametersDAO = this.ghcService.getParametersToSet();
-        return new ResponseEntity<>(parametersDAO.getTemperatureInside(), HttpStatus.OK);
+        ParametersDAO parametersDAO;
+        HttpHeaders responseHeader = new HttpHeaders();
+        if(this.ghcService.getParametersToSet() == null){
+            responseHeader.set("temperatureInside", "16");
+            return ResponseEntity.ok().body(responseHeader);
+        }
+        parametersDAO = this.ghcService.getParametersToSet();
+        responseHeader.set("temperatureInside", parametersDAO.getTemperatureInside().toString());
+        return ResponseEntity.ok().body(responseHeader);
     }
 
-    @PutMapping("parameters/{setTemperatureInside}/{setStartLightHour}/{setEndLightHour}")
-    public ResponseEntity setParameters(@PathVariable Long setTemperatureInside, @PathVariable Integer setStartLightHour, @PathVariable Integer setEndLightHour) {
-        return this.ghcService.setParameters(setTemperatureInside, setStartLightHour, setEndLightHour);
+    @PostMapping("parameters/{setTemperatureInside}")
+    public ResponseEntity setParameters(@PathVariable Float setTemperatureInside) {
+        return this.ghcService.setParameters(setTemperatureInside);
     }
 
-    @PutMapping("save-data")
-    public ResponseEntity saveDataFromGreenhouse(@RequestParam LocalDateTime collectionDateAndTime, @RequestParam Long measuredTInside, @RequestParam Long measuredTOutside,
-                                                 @RequestParam Long measuredHInside, @RequestParam Long measuredHOutside, @RequestParam Boolean lightState, @RequestParam Boolean windowState,
-                                                 @RequestParam Boolean heaterState, @RequestParam Long soilMoisture) {
+    @PostMapping("save-data")
+    public ResponseEntity saveDataFromGreenhouse(@RequestParam Float measuredTInside, @RequestParam Float measuredTOutside,
+                                                 @RequestParam Float measuredHInside, @RequestParam Float measuredHOutside,
+                                                 @RequestParam Boolean lightState, @RequestParam Boolean windowState,
+                                                 @RequestParam Boolean heaterState, @RequestParam int soilMoisture) {
         CollectedDataDAO collectedDataDAO = CollectedDataDAO.builder()
                 .dataId(UUID.randomUUID())
-                .collectionDateAndTime(collectionDateAndTime)
+                .collectionDateAndTime(LocalDateTime.now())
                 .temperatureInside(measuredTInside)
                 .temperatureOutside(measuredTOutside)
                 .humidityInside(measuredHInside)
@@ -44,6 +59,7 @@ public class GHCController {
                 .heaterState(heaterState)
                 .windowState(windowState)
                 .build();
+
         return ghcService.saveCollectedData(collectedDataDAO);
     }
 }

@@ -22,12 +22,8 @@ public class ParametersDAO {
     @Id
     @Column(name = "id")
     private UUID parametersId;
-    @Column(name = "set-date")
-    private LocalDateTime setDateTime;
-    @Column(name = "temperature-inside")
-    private Long temperatureInside;
-    @Column(name = "start-light-hour")
-    private Integer startLightHour;
-    @Column(name = "end-light-hour")
-    private Integer endLightHour;
+    @Column(name = "set_date")
+    private LocalDateTime dateTime;
+    @Column(name = "temperature_inside")
+    private Float temperatureInside;
 }

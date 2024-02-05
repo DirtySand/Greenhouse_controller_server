@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.jakub</groupId>
     <artifactId>GreenhouseControllerServer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>GreenhouseControllerServer</name>
     <description>GreenhouseControllerServer</description>
     <properties>
@@ -53,6 +53,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <executable>true</executable>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

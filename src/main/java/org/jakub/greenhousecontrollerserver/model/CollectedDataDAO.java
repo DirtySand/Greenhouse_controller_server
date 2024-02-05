@@ -17,27 +17,27 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "collected-data")
+@Table(name = "collected_data")
 public class CollectedDataDAO {
     @Id
     @Column(name = "id")
     private UUID dataId;
-    @Column(name = "date-and-time")
+    @Column(name = "date_and_time")
     private LocalDateTime collectionDateAndTime;
-    @Column(name = "temperature-inside")
-    private Long temperatureInside;
-    @Column(name = "temperature-outside")
-    private Long temperatureOutside;
-    @Column(name = "humidity-inside")
-    private Long humidityInside;
-    @Column(name = "humidity-outside")
-    private Long humidityOutside;
-    @Column(name = "soil-moisture")
-    private Long soilMoisture;
-    @Column(name = "heater-state")
+    @Column(name = "temperature_inside")
+    private Float temperatureInside;
+    @Column(name = "temperature_outside")
+    private Float temperatureOutside;
+    @Column(name = "humidity_inside")
+    private Float humidityInside;
+    @Column(name = "humidity_outside")
+    private Float humidityOutside;
+    @Column(name = "soil_moisture")
+    private int soilMoisture;
+    @Column(name = "heater_state")
     private Boolean heaterState;
-    @Column(name = "window-state")
+    @Column(name = "window_state")
     private Boolean windowState;
-    @Column(name = "light-state")
+    @Column(name = "light_state")
     private Boolean lightState;
 }
